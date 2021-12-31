@@ -34,7 +34,7 @@ def generateGaussianKernel(height, width, sigma, mu1, mu2, number):
             gaussianKernel[x, y] = np.exp(- (np.power(x - mu1, 2) + np.power(y - mu2, 2)) / (2 * sigma * sigma))
     plt.imshow(gaussianKernel)
     plt.colorbar()
-    plt.savefig('../results/res'+str(number)+'-'+str(sigma)+'.jpg')
+    plt.savefig('../results/res3'+str(number)+'-'+str(sigma)+'.jpg')
     plt.show()
     return gaussianKernel
 
@@ -43,7 +43,7 @@ def generateLaplacianFilter(height, width, sigma, mu1, mu2, number):
     laplacianKernel = 1 - generateGaussianKernel(height, width, sigma, mu1, mu2, number)
     plt.imshow(laplacianKernel)
     plt.colorbar()
-    plt.savefig('../results/res'+str(number)+'-'+str(sigma)+'.jpg')
+    plt.savefig('../results/res3'+str(number)+'-'+str(sigma)+'.jpg')
     plt.show()
     return laplacianKernel
 

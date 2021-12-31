@@ -3,7 +3,7 @@ import cv2
 import random
 
 
-def matchPatch(texture, patch, strip_size, direction=0):
+def matchPatch(texture, patch, strip_size, patch_size, direction=0):
     texture, patch = texture.astype(np.float32), patch.astype(np.float32)
     mask, limit_y, limit_x = np.zeros(patch.shape, dtype=np.float32), None, None
     if direction == 0:
@@ -28,7 +28,7 @@ def findRandomMin(result, num, limit_y, limit_x):
     for i in range(yLoc.shape[0]):
         yLoc[i], xLoc[i] = locations[indices[0][i], 0], locations[indices[0][i], 1]
     if yLoc.shape[0] == 0:
-        return findRandomMin(result, num+1, limit_y, limit_x)
+        return findRandomMin(result, num + 1, limit_y, limit_x)
     else:
         r = np.random.randint(0, yLoc.shape[0])
         return yLoc[r], xLoc[r]
@@ -51,14 +51,6 @@ def findMinCutPatch(patch1, patch2, strip_size, direction=0):
         mask_v[:, :strip_size, :] = np.rot90(makeMinCutHorizontallyMask(np.rot90(strip3, -1), np.rot90(strip4, -1)), 1)
         mask = np.logical_or(mask_v, mask_h)
         return patch1 * mask + patch2 * (1 - mask)
-        # strip1, strip2 = patch1[:strip_size, :, :], patch2[:strip_size, :, :]
-        # mask_h = makeMinCutHorizontallyMask(strip1, strip2)
-        # strip3, strip4 = patch1[:, :strip_size, :], patch2[:, :strip_size, :]
-        # mask_v = np.rot90(makeMinCutHorizontallyMask(np.rot90(strip3, -1), np.rot90(strip4, -1)), 1)
-        # result = np.copy(patch2)
-        # result[:strip_size, :, :] = mask_h * strip1 + (1-mask_h) * strip2
-        # result[:, :strip_size, :] = mask_v * strip3 + (1-mask_v) * strip4
-        # return result
 
 
 def makeMinCutHorizontallyMask(strip1, strip2):
@@ -84,36 +76,48 @@ def makeMinCutHorizontallyMask(strip1, strip2):
         min_i = path[min_i, col - 1]
     return mask
 
-# first choose a random patch:
-texture = cv2.imread('../images/Textures/texture01.jpg')
-height, width, _ = texture.shape
-patch_size, strip_size, diff = 100, 20, 80
-h_start_index, w_start_index = random.randint(0, height - patch_size), random.randint(0, width - patch_size)
-patch = texture[h_start_index: h_start_index + patch_size, w_start_index: w_start_index + patch_size, :]
 
-result = np.zeros((2500, 2500, 3))
-result[0: patch_size, 0: patch_size, :] = texture[0: patch_size, 0: patch_size, :]
+def synthesize(image, res_name):
+    # first choose a random patch:
+    texture = image
+    height, width, _ = texture.shape
+    patch_size, strip_size, diff = 100, 20, 80
+    h_start_index, w_start_index = random.randint(0, height - patch_size), random.randint(0, width - patch_size)
+    patch = texture[h_start_index: h_start_index + patch_size, w_start_index: w_start_index + patch_size, :]
 
-for i in range(0, 31):
-    for j in range(0, 31):
-        if i == 0 and j != 0:
-            adjacent_v_patch = result[0: patch_size, j * diff + strip_size - patch_size: j * diff + strip_size, :]
-            new_patch = matchPatch(texture, adjacent_v_patch, strip_size, direction=0)
-            min_cut_strip = findMinCutPatch(adjacent_v_patch, new_patch, strip_size, direction=0)
-            result[0:patch_size, j * diff: j * diff + strip_size, :] = min_cut_strip
-            result[0:patch_size, j * diff + strip_size: j * diff + patch_size, :] = new_patch[:, strip_size:, :]
-        if i != 0 and j == 0:
-            adjacent_h_patch = result[i * diff + strip_size - patch_size: i * diff + strip_size, 0: patch_size, :]
-            new_patch = matchPatch(texture, adjacent_h_patch, strip_size, direction=1)
-            min_cut_strip = findMinCutPatch(adjacent_h_patch, new_patch, strip_size, direction=1)
-            result[i * diff: i * diff + strip_size, 0:patch_size, :] = min_cut_strip
-            result[i * diff + strip_size: i * diff + patch_size, 0:patch_size, :] = new_patch[strip_size:, :, :]
-        elif i != 0 and j != 0:
-            adjacent_tc_patch = result[diff*i: diff*i + patch_size, diff*j: diff*j + patch_size, :]
-            new_patch = matchPatch(texture, adjacent_tc_patch, strip_size, direction=2)
-            min_cut_patch = findMinCutPatch(adjacent_tc_patch, new_patch, strip_size, direction=2)
-            result[diff * i: diff * i + patch_size, diff * j: diff * j + patch_size, :] = min_cut_patch
-cv2.imwrite("../results/yoo" + ".jpg", result)
+    result = np.zeros((2500, 2500, 3))
+    result[0: patch_size, 0: patch_size, :] = patch
+
+    for i in range(0, 31):
+        for j in range(0, 31):
+            if i == 0 and j != 0:
+                adjacent_v_patch = result[0: patch_size, j * diff + strip_size - patch_size: j * diff + strip_size, :]
+                new_patch = matchPatch(texture, adjacent_v_patch, strip_size, patch_size, direction=0)
+                min_cut_strip = findMinCutPatch(adjacent_v_patch, new_patch, strip_size, direction=0)
+                result[0:patch_size, j * diff: j * diff + strip_size, :] = min_cut_strip
+                result[0:patch_size, j * diff + strip_size: j * diff + patch_size, :] = new_patch[:, strip_size:, :]
+            if i != 0 and j == 0:
+                adjacent_h_patch = result[i * diff + strip_size - patch_size: i * diff + strip_size, 0: patch_size, :]
+                new_patch = matchPatch(texture, adjacent_h_patch, strip_size, patch_size, direction=1)
+                min_cut_strip = findMinCutPatch(adjacent_h_patch, new_patch, strip_size, direction=1)
+                result[i * diff: i * diff + strip_size, 0:patch_size, :] = min_cut_strip
+                result[i * diff + strip_size: i * diff + patch_size, 0:patch_size, :] = new_patch[strip_size:, :, :]
+            elif i != 0 and j != 0:
+                adjacent_tc_patch = result[diff * i: diff * i + patch_size, diff * j: diff * j + patch_size, :]
+                new_patch = matchPatch(texture, adjacent_tc_patch, strip_size, patch_size, direction=2)
+                min_cut_patch = findMinCutPatch(adjacent_tc_patch, new_patch, strip_size, direction=2)
+                result[diff * i: diff * i + patch_size, diff * j: diff * j + patch_size, :] = min_cut_patch
+
+    res = np.zeros((2500, 2500 + texture.shape[1] + 300, 3))
+    res[:, :2500, :] = result
+    res[300:texture.shape[0] + 300, 2500 + 100 : 2500 + 100 + texture.shape[1] , :] = texture
+    cv2.imwrite("../results/" + res_name + ".jpg", res)
+
+
+# synthesize(cv2.imread('../images/Textures/texture01.jpg'), 'res11')
+# synthesize(cv2.imread('../images/Textures/texture02.png'), 'res12')
+synthesize(cv2.imread('../images/Textures/texture20.jpg'), 'res15')
+synthesize(cv2.imread('../images/Textures/texture21.jpeg'), 'res16')
 
 # adjacent_v_patch = result[diff*i: diff*i + patch_size, j * diff + strip_size - patch_size: j * diff + strip_size, :]
 # adjacent_h_patch = result[i * diff + strip_size - patch_size: i * diff + strip_size, diff*j: diff*j + patch_size, :]
