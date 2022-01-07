@@ -63,8 +63,6 @@ def generate_initial_centers():
 
 def distance(xk, xn, yk, yn, img):
     d_lab = np.linalg.norm(img[yk, xk, :] - img[yn, xn, :])
-    # d_lab = (img[yk, xk, 0] - img[yn, xn, 0]) ** 2 + (img[yk, xk, 1] - img[yn, xn, 1]) ** 2 + (
-    #             img[yk, xk, 2] - img[yn, xn, 2]) ** 2
     d_xy = (xk - xn) ** 2 + (yk - yn) ** 2
     return d_lab + alpha * d_xy
 
@@ -75,6 +73,8 @@ def assign_centers():
     for center in centers:
         y, x = center.y, center.x
         y_min, y_max, x_min, x_max = max(0, y - s), min(height, y + s + 1), max(0, x - s), min(width, x + s + 1)
+        # print(y_min, y_max, x_min, x_max)
+        # print(x, y)
         # d_lab = np.linalg.norm(image_lab[y_min:y_max, x_min:x_max, :] - image_lab[y, x, :], axis=2)
         # m = np.arange(y_min, y_max).reshape((-1, 1))
         # m1 = m * np.ones((y_max - y_min, x_max - x_min))
@@ -92,21 +92,14 @@ def assign_centers():
                 if matches[j, i] > dist:
                     matches[j, i] = dist
                     labels[j, i] = center.label
-        # centers.append(center)
     return labels
 
 
 def generate_new_centers():
     for center in centers:
         cluster = np.argwhere(labels == center.label)
-        center.x, center.y = int(np.mean(cluster[:, 0])), int(np.mean(cluster[:, 1]))
-    # for count in range(len(centers)):
-    #     cluster = image[labels == count]
-    #     if len(cluster) > 0:
-    #         tmp = np.mean(cluster, axis=0)
-    #         centers[count] = tmp
-        # mean = np.mean(cluster, axis=0)
-        # center = mean
+        if len(cluster) > 0:
+            center.x, center.y = int(np.mean(cluster[:, 1])), int(np.mean(cluster[:, 0]))
 
 
 gradient = generate_gradient()
@@ -115,12 +108,4 @@ for iteration in range(4):
     labels = assign_centers()
     generate_new_centers()
     if iteration == 3:
-        res = image.copy()
-
-        for c in range(len(centers)):
-            res[labels == c] = centers[c]
-
-        res = res[:, :, 2:].astype(np.uint8)
-        res = cv2.cvtColor(res, cv2.COLOR_Lab2RGB)
-
         plt.imsave('res08.jpg', mark_boundaries(image, labels.astype(int)))
