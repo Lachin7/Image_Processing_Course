@@ -23,4 +23,11 @@ q3: Homography and Image Warping <br>
 
 q4: Creating Hybrid Images<br>
 
+## HW2
+q1: Using hough transform to detect lines (not completed)<br>
+
+q2: Texture synthesis<br>
+
+q3: Implementation of patch match algorithm for image completion(image painting)<br>
 Other assignments are to be completed in the current semester.
+
