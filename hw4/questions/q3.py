@@ -108,4 +108,5 @@ for iteration in range(4):
     labels = assign_centers()
     generate_new_centers()
     if iteration == 3:
+
         plt.imsave('res08.jpg', mark_boundaries(image, labels.astype(int)))
