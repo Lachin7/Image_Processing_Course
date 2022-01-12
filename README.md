@@ -32,3 +32,16 @@ q3: Implementation of patch match algorithm for image completion(image painting)
 
 Other assignments are to be completed in the current semester.
 
+## HW3
+q1: Implementation of k-means algorithm for image clustering<br>
+
+q2: Implementation of mean-shift algorithm for image clustering (not efficient for large images)<br>
+
+q3: Image segmentation using SLIC<br>
+
+q4:  Using felzenszwalb segementation algorithm and feature vectors to only select specific objects(birds) in the image. 
+
+q4:  Active contour implementation. 
+
+Other assignments are to be completed in the current semester.
+
