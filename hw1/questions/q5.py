@@ -29,7 +29,7 @@ def dumbFilter(k, img):
     t1 = time.time()
     result = result[k: height - k, k: width - k, :]
     print(result.shape)
-    cv2.imwrite("res08.jpg", result)
+    cv2.imwrite("res06.jpg", result)
     return (t1 - t0), result
 
 
