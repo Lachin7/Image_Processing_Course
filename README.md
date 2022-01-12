@@ -32,7 +32,7 @@ q3: Implementation of patch match algorithm for image completion(image painting)
 
 Other assignments are to be completed in the current semester.
 
-## HW3
+## HW4
 q1: Implementation of k-means algorithm for image clustering<br>
 
 q2: Implementation of mean-shift algorithm for image clustering (not efficient for large images)<br>
