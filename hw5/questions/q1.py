@@ -61,13 +61,21 @@ def interpolate():
 pts_1, pts_2, n = readPoints()
 tri = Delaunay(pts_1)
 
-out = cv2.VideoWriter('../results/morph.avi', cv2.VideoWriter_fourcc(*'MJPG'), 15, (w1, h1))
+out = cv2.VideoWriter('../results/morph.avi', cv2.VideoWriter_fourcc(*'MJPG'), 30, (w1, h1))
 img_1, img_2 = img_1.astype(float), img_2.astype(float)
+results = []
 for frame in range(1, 46):
     t = (frame - 1) / 44
     interpolation_pts = (1 - t) * pts_1 + t * pts_2
     res = np.zeros((h1, w1, 3))
     interpolate()
     out.write(res.astype(np.uint8))
+    results.append(res.astype(np.uint8))
 
+cv2.imwrite("../results/res03.jpg", results[14])
+cv2.imwrite("../results/res04.jpg", results[29])
+
+results.reverse()
+for i in range(0, 45):
+    out.write(results[i])
 out.release()
