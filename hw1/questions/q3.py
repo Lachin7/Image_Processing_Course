@@ -49,16 +49,16 @@ def cropEdges(img):
     h = hsv[:, :, 0]
     edge1, edge2, edge3, edge4 = 0, 0, 0, 0
     for i in range(int(height / 8)):
-        if (np.std(h[i, :])) < 30:
+        if (np.std(h[i, :])) < 37:
             edge1 = i
-        if (np.std(h[height - i - 1, :])) < 30:
+        if (np.std(h[height - i - 1, :])) < 37:
             edge2 = height - i - 1
     img = img[edge1: edge2, :, :]
 
     for i in range(int(width / 8)):
-        if (np.std(h[:, i])) < 30:
+        if (np.std(h[:, i])) < 38:
             edge3 = i
-        if (np.std(h[:, width - i - 1])) < 30:
+        if (np.std(h[:, width - i - 1])) < 38:
             edge4 = width - i - 1
     img = img[:, edge3: edge4, :]
     return img

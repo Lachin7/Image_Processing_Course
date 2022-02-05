@@ -75,7 +75,7 @@ def scale(array):
 nearFFT = generateFFT(near, 'res23-dft-near')
 farFFT = generateFFT(far, 'res24-dft-far')
 
-r, s = 55, 8
+r, s = 8, 8
 gaussianKernel = generateGaussianKernel(height, width, r, int(height / 2), int(width / 2),25)
 laplacianKernel = generateLaplacianFilter(height, width, s, int(height / 2), int(width / 2),26)
 

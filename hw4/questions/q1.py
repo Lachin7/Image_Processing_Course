@@ -59,8 +59,8 @@ def K_means(x, y, n, img_num, convert=False):
             for cluster_num in range(k):
                 xx = x[clusters == cluster_num]
                 yy = y[clusters == cluster_num]
-                clusters_x[cluster_num] = np.mean(xx, axis=0)
-                clusters_y[cluster_num] = np.mean(yy, axis=0)
+                clusters_x[cluster_num] = np.average(xx)
+                clusters_y[cluster_num] = np.average(yy)
                 plt.plot(xx, yy, '.')
         plt.savefig("../results/res0" + str(img_num) + ".jpg")
         plt.show()

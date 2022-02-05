@@ -35,6 +35,7 @@ def findTheBook(x1, y1, x2, y2, x3, y3, x4, y4, name):
     srcPoints = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]], dtype=float)
     desPoints = np.array([[0, 0], [height - 1, 0], [0, width - 1], [height - 1, width - 1]], dtype=float)
     h, status = cv2.findHomography(srcPoints, desPoints)
+    print(h)
     result = warp(h, books, book)
     cv2.imwrite(name + '.jpg', result)
 

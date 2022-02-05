@@ -71,17 +71,19 @@ cv2.imwrite('../results/res07.jpg', sharpenedMask)
 imgFft = np.fft.fft2(image, axes=(0, 1))
 shiftedImg = np.fft.fftshift(imgFft)
 amplitude = np.abs(shiftedImg)
-logAmplitude = np.log(amplitude)
+logAmplitude = 10 * np.log(amplitude)
 cv2.imwrite('../results/res08.jpg', logAmplitude)
 
 laplacianKernel = generateLaplacianFilter(height, width, 200, int(image.shape[0] / 2),
                                           int(image.shape[1] / 2))
 H_hp = np.fft.fft2(laplacianKernel)
 shiftedH_hp = np.fft.fftshift(H_hp)
-mag = np.log(np.abs(shiftedH_hp))
+mag = 10 * np.log(np.abs(shiftedH_hp))
+plt.imshow(mag)
+plt.show()
 plt.savefig('../results/res09.jpg')
 
-k = 10
+k = 5
 ## calculate (1+k*H_hp).F
 KH = np.array(1 + k * shiftedH_hp)
 result = []
@@ -89,7 +91,7 @@ for i in range(0, 3):
     result.insert(0, np.multiply(KH, shiftedImg[:, :, 2 - i]))
 res = np.dstack(result)
 
-mag = np.log(np.abs(res))
+mag = 10 * np.log(np.abs(res))
 cv2.imwrite('../results/res10.jpg', mag)
 
 # final image
