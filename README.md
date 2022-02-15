@@ -30,7 +30,6 @@ q2: Texture synthesis<br>
 
 q3: Implementation of patch match algorithm for image completion(image painting)<br>
 
-Other assignments are to be completed in the current semester.
 
 ## HW4
 q1: Implementation of k-means algorithm for image clustering<br>
@@ -43,5 +42,11 @@ q4:  Using felzenszwalb segementation algorithm and feature vectors to only sele
 
 q4:  Active contour implementation. 
 
-Other assignments are to be completed in the current semester.
+
+## HW5
+q1: Morphing<br>
+
+q2: Possion Image Blending<br>
+
+q3: Multiresolutional Blending and Feathering<br>
 
